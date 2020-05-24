@@ -69,11 +69,12 @@ def displayFacesInDB(face_db):
     for person in face_db:
         if len(person)>max_faces:
             max_faces = len(person)
-    plt.figure()
+    plt.figure(figsize=(10,8))
     for row, person in enumerate(face_db):
         for col, face in enumerate(person):
             plt.subplot(num_people, max_faces, row*max_faces+col+1)
             img = cv2.cvtColor(face['img'], cv2.COLOR_BGR2RGB)
+            img = cv2.resize(img, (100,100))
             plt.imshow(img)
             plt.title(face['name'], fontdict={'family':'TakaoGothic'})
             plt.axis('off')
