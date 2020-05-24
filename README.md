@@ -61,6 +61,7 @@ This program will detect the faces from the images, crop the found faces and reg
 #### Example of `face-db`
 ```sh
 ./
++ face-feature-visualization.py
 + face-db/
 | + person0/
 | | + 0.jpg
