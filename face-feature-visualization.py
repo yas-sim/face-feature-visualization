@@ -76,25 +76,9 @@ def displayFacesInDB(face_db):
             img = cv2.cvtColor(face['img'], cv2.COLOR_BGR2RGB)
             img = cv2.resize(img, (100,100))
             plt.imshow(img)
-            plt.title(face['name'], fontdict={'family':'TakaoGothic'})
+            plt.title(face['name'])
             plt.axis('off')
     plt.show()
-
-def disp(reduced, label):
-    xmin = min(reduced[:,0])
-    xmax = max(reduced[:,0])
-    ymin = min(reduced[:,1])
-    ymax = max(reduced[:,1])
-    xymax = max([abs(xmin), abs(xmax), abs(ymin), abs(ymax)]) * 1.2
-    scale = (300)/xymax
-    img = np.full((300*2, 300*2, 3), (255,255,255), np.uint8)
-    for l, r in zip(label, reduced):
-        x = int(r[0]*scale)+300
-        y = int(r[1]*scale)+300
-        cv2.circle(img, (x,y), 4, (0,0,0), -1)
-        cv2.putText(img, l, (x,y), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,0), 1)
-    cv2.imshow('scatter', img)
-    cv2.waitKey(1)
 
 def reduceDimensionAndDisplayScatterChart(face_db):
     vec=[]
@@ -104,15 +88,20 @@ def reduceDimensionAndDisplayScatterChart(face_db):
             vec.append(np.array(face['feature'], dtype=np.float32))
             name.append(face['name'])
 
-    tsne = TSNE(n_components=2, init='random', random_state=0, perplexity=1)
+    tsne = TSNE(n_components=2, init='random', random_state=0, 
+            n_iter=10000, n_iter_without_progress=200,
+            learning_rate=50, perplexity=4)
     reduced = tsne.fit_transform(vec)
-
-    #disp(reduced, name)
 
     fig, ax = plt.subplots(figsize=(5,5))
     cmap=plt.get_cmap('Dark2')
+    col_idx = 0
+    prev_name=os.path.dirname(name[0])
     for i in range(reduced.shape[0]):
-        cval = cmap(i)
+        if os.path.dirname(name[i]) != prev_name:
+            prev_name=os.path.dirname(name[i])
+            col_idx+=1
+        cval = cmap(col_idx)
         ax.scatter(reduced[i][0], reduced[i][1], marker='.', color=cval)
         ax.annotate(name[i], xy=(reduced[i][0], reduced[i][1]), color=cval)
     plt.show()
