@@ -56,6 +56,7 @@ Use `Model Downloader` to download the required models.
 
 ### 3. Prepare face images
 This program will search images (jpg/bmp/png) from `./face-db` directory. You can create the directories under `./face-db` as many as you want. The directory names and the file names are displayed right next to the dot on the chart so that you can identify which data it is.  
+This program will detect the faces from the images, crop the found faces and register them to the DB.  
 
 #### Example of `face-db`
 ```sh
